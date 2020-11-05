@@ -11,3 +11,4 @@ bool getDoNotDisturb() {
   }
   return doNotDisturb;
 }
+

@@ -1,0 +1,2 @@
+int getDoNotDisturbStartHour();
+int getDoNotDisturbEndHour();

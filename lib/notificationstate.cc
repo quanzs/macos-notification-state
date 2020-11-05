@@ -23,6 +23,7 @@
 #ifdef __APPLE__
 #include "notificationstate-query.h"
 #include "do-not-disturb.h"
+#include "do-not-disturb-hour.h"
 #endif
 
 static napi_value QueryUserSessionState(napi_env env, napi_callback_info info) {
@@ -55,6 +56,30 @@ static napi_value GetDoNotDisturb(napi_env env, napi_callback_info info) {
   return result;
 }
 
+static napi_value GetDoNotDisturbStartHour(napi_env env, napi_callback_info info) {
+  int returnValue = -1;
+
+  #ifdef __APPLE__
+  returnValue = getDoNotDisturbStartHour();
+  #endif
+
+  napi_value result;
+  NAPI_CALL(env, napi_create_int32(env, returnValue, &result));
+  return result;
+}
+
+static napi_value GetDoNotDisturbEndHour(napi_env env, napi_callback_info info) {
+  int returnValue = -1;
+
+  #ifdef __APPLE__
+  returnValue = getDoNotDisturbEndHour();
+  #endif
+
+  napi_value result;
+  NAPI_CALL(env, napi_create_int32(env, returnValue, &result));
+  return result;
+}
+
 NAPI_MODULE_INIT() {
   napi_value result = nullptr;
   NAPI_CALL(env, napi_create_object(env, &result));
@@ -66,6 +91,12 @@ NAPI_MODULE_INIT() {
 
   NAPI_CALL(env, napi_create_function(env, "getDoNotDisturb", NAPI_AUTO_LENGTH, GetDoNotDisturb, NULL, &exported_function));
   NAPI_CALL(env, napi_set_named_property(env, result, "getDoNotDisturb", exported_function));
+
+  NAPI_CALL(env, napi_create_function(env, "getDoNotDisturbStartHour", NAPI_AUTO_LENGTH, GetDoNotDisturbStartHour, NULL, &exported_function));
+  NAPI_CALL(env, napi_set_named_property(env, result, "getDoNotDisturbStartHour", exported_function));
+
+  NAPI_CALL(env, napi_create_function(env, "getDoNotDisturbEndHour", NAPI_AUTO_LENGTH, GetDoNotDisturbEndHour, NULL, &exported_function));
+  NAPI_CALL(env, napi_set_named_property(env, result, "getDoNotDisturbEndHour", exported_function));
   #endif
   return result;
 }
